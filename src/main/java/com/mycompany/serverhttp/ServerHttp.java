@@ -3,11 +3,10 @@
  */
 
 package com.mycompany.serverhttp;
-import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-
+import java.net.ServerSocket;
+import java.net.Socket;
 /**
  *
  * @author yerso
@@ -15,10 +14,15 @@ import java.net.InetSocketAddress;
 public class ServerHttp {
 
     public static void main(String[] args) throws IOException{
-        
-        HttpServer server = HttpServer.create(new InetSocketAddress(8088), 0);
-       
-        server.start();
-        System.out.println("Servidor iniciado en el puerto 8088");
+        int port = 9999;
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            System.out.println("Wait client for port: " + port + "...");
+            
+            Socket socket = serverSocket.accept();
+            System.out.println("Cliente Conected: " + socket.getInetAddress());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
