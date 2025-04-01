@@ -3,32 +3,46 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Class;
-import java.util.Map;
-import java.util.Dictionary;
-import java.util.HashMap;
+
 
 /**
  *
  * @author yerso
  */
 public class Resquest extends HttpMessages  {
-    private String start_line = null;
-    private String headers = null;
-    private String body = null;
-    private boolean emptyLine = false;
-
+    private StartLinerRequest startLine;
+    
     public Resquest(String text) {
-//        try{
-//            this.start_line = this.GetStartLine(text);
-//            this.headers = this.GetHeader(text);
-//            this.emptyLine = this.IsEmptyLine(text);
-//            this.body = this.GetBody(text);
-//        }
-//        catch(Exception e){
-//            System.out.println("Error mensaje");
-//        }
+        try{
+            String startline =GetStartLine(text);
+            if (startline == null){
+                throw new IllegalArgumentException("Error: No se puedo obtener el startline");
+            }
+            ParserStarline(startline);
+        }
+        catch(Exception e){
+            System.out.println("Error parsing HTTP request: " + e.getMessage());
+        }
     }
-
+    
+    private void ParserStarline(String firstLine) {
+        System.out.println("No se que poner aca xd" + firstLine);
+        String[] parts = firstLine.split(" ");
+        if (parts.length < 3) {
+            throw new IllegalArgumentException("Error: HTTP StarLine Incorrect");
+        }
+        
+        EnumMethod method = EnumMethod.valueOf( parts[0]);        
+        String request = parts[1];     
+        String protocol = parts[2];    
+        System.out.println("wea supuestamente partida"+method+request+protocol);
+        this.startLine = new StartLinerRequest(method, request, protocol);
+    }
+    
+    public StartLinerRequest getStartLine() {
+        return startLine;
+    }
     
     
 }
+

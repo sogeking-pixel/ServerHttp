@@ -16,28 +16,19 @@ public class HttpMessages {
     
     public static String GetStartLine(String text) {
         if (text == null || text.isEmpty()) {
-            return "Error: Input vacío o nulo";
+            return null;
         }
 
-        // Encontrar la primera línea del texto
         int indexStartLine = text.indexOf("\r\n");
         if (indexStartLine == -1) {
-            return "Error: No se encontró la línea de inicio";
+            return null;
         }
-
-        String firstLine = text.substring(0, indexStartLine).trim(); // Trim para evitar espacios extras
-
-        // Separar los componentes de la línea usando split
-        String[] parts = firstLine.split(" ");
-        if (parts.length < 3) {
-            return "Error: Formato de línea inválido";
-        }
-
-        String method = parts[0];      // Método (GET, POST, etc.)
-        String request = parts[1];     // Ruta solicitada
-        String protocol = parts[2];    // Protocolo (HTTP/1.1)
-
-        return "Method: " + method + " | Request: " + request + " | Protocol: " + protocol;
+        
+        String firstLine = text.substring(0, indexStartLine).trim(); 
+        
+        
+        return firstLine;
+        
     }
 
     
