@@ -18,6 +18,8 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 /**
  *
  * @author yerso
@@ -30,22 +32,23 @@ public class ServerHttp {
             Los separadores del formato sera esto:
             https://mdn.github.io/shared-assets/images/diagrams/http/messages/http-message-anatomy.svg
         */
-        int port = 9999;
         
-//        String request_text = "POST /users HTTP/1.1\r\n" +
-//                              "Host: example.com\r\n" +
-//                              "Content-Type: application/x-www-form-urlencoded\r\n" +
-//                              "Content-Length: 5\r\n"+
-//                              "\r\n" +
-//                              "hola mundo, este es el maldito body xddxdx";
-//        
-//        System.out.println("First Line: " + Resquest.GetStartLine(request_text));
-//        System.out.println("Headers: " + Resquest.GetHeader(request_text));
-//        System.out.println("Body: " + Resquest.GetBody(request_text));
-//
-        Response response_200 = new Response("HTTP/1.1", 200, "OKI DOKI");
-        Response response_404 = new Response("HTTP/1.1", 404, "Not Found");
+        int port = 5676;
+        
+        byte[] fileBytes = Files.readAllBytes(Paths.get("C:\\Users\\yerso\\OneDrive\\Documentos\\NetBeansProjects\\ServerHttp\\src\\main\\java\\Recurse\\index.html"));
+            
+        String contenidoHtml = new String(fileBytes, StandardCharsets.UTF_8);
 
+     
+        Response response_200 = new Response("HTTP/1.1", 200, "OKI DOKI");
+        
+        Response response_404 = new Response("HTTP/1.1", 404, "Not Found");
+        
+        
+        Response get_page = new Response(response_200);
+        get_page.getHeader().setValueDictionary("Content-Type", "text/html; charset=UTF-8");
+
+        get_page.getBody().setContent(contenidoHtml);
         
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             
@@ -68,32 +71,39 @@ public class ServerHttp {
                 
                 String mensajeRecibido = new String(buffer, 0, bytesRead, StandardCharsets.UTF_8);
                 
-                System.out.println("Cliente dice: " + mensajeRecibido);
+//                System.out.println("Cliente dice: " + mensajeRecibido);
                 Resquest request = new Resquest(mensajeRecibido);
                 
                 StartLinerRequest startline = request.getStartLine();
                 
                 if(startline == null){
-                    throw new IllegalArgumentException("Error: Null start line xddxdxdxdxdx");
+                    throw new IllegalArgumentException("Error: startline null");
                 }
                 String url = startline.getRequestTarget();
                 
                 if(url == null){
-                    throw new IllegalArgumentException("Error: Null xddxdxdxdxdx");
+                    throw new IllegalArgumentException("Error: url a que acceder, null");
                 }
                 
                 String respuesta;
                 
                 if (url.equals("/index")){
-                    respuesta =  response_200.toString();
+                    
+                    respuesta =  get_page.toString();
+                    System.out.println("Se envio correctamente");
                 }
                 else{
                     respuesta =  response_404.toString();
+                    System.out.println("Pagina no existe");
+
                 }
                 
                 
                 byte[] respuestaBytes = respuesta.getBytes();
                 output.write(respuestaBytes);
+                
+                System.out.println(respuesta);
+                
 
                 // Cerrar conexión
                 socket.close();
