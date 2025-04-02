@@ -34,13 +34,13 @@ public class HttpMessages {
     
     public static String GetHeader(String text){
         if (text == null || text.isEmpty()){
-            return "nose";
+            return null;
         }
         
         int indexHeaderStart = text.indexOf("\r\n");
         int indexHeaderEnd = text.indexOf("\r\n\r\n");
         if (indexHeaderEnd == -1){
-            return "pene";
+            return null;
         }
         
         String header =  text.substring(indexHeaderStart, indexHeaderEnd).trim();
@@ -55,18 +55,18 @@ public class HttpMessages {
              dictionary.put(nosexd[0].trim(), nosexd[1].trim());
         }       
         
-        return recorrerNose(dictionary);
+        return RecorrerHeader(dictionary);
         
     }
     
     public static String GetBody(String text){
         if (text == null || text.isEmpty()){
-            return "nose";
+            return null;
         }        
         
         int indexBodyEnd = text.indexOf("\r\n\r\n");
         if (indexBodyEnd == -1){
-            return "No existe mi pene";
+            return null;
         }
         
         var body =  text.substring(indexBodyEnd).trim();
@@ -75,7 +75,7 @@ public class HttpMessages {
         return body;
     }
     
-    private static String recorrerNose(Map<String, String> dictionary) {
+    protected static String RecorrerHeader(Map<String, String> dictionary) {
         String cadena = "";
         for (Map.Entry<String, String> entry : dictionary.entrySet()) {
             cadena += "\n" + entry.getKey() + ": " + entry.getValue() ;
