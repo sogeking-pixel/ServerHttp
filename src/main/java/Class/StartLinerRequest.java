@@ -32,8 +32,8 @@ public class StartLinerRequest implements IStartLine{
     }
     
     @Override
-    public String getProtocol() {
-        return protocol.getTypeVersion();
+    public EnumProcotolAccess getProtocol() {
+        return protocol;
     }
 
     @Override

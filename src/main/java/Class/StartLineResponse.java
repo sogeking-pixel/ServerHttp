@@ -25,7 +25,7 @@ public class StartLineResponse implements IStartLine{
      }
 
     @Override
-    public String getProtocol() {
-        return protocol.getTypeVersion();
+    public EnumProcotolAccess getProtocol() {
+        return protocol;
     }
 }

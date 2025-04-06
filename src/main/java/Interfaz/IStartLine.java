@@ -4,10 +4,12 @@
  */
 package Interfaz;
 
+import Class.EnumProcotolAccess;
+
 /**
  *
  * @author yerso
  */
 public interface IStartLine {
-    String getProtocol();
+    EnumProcotolAccess getProtocol();
 }

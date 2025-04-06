@@ -51,12 +51,9 @@ public class HttpResponse extends HttpMessages {
         this.body = body;
     }
 
-    
-    
    
     @Override
    public String toString(){
-        System.out.println("1." + starLine.toString() + "2." + header.toString()  + "\r\n" + "3." + body.toString());
         return starLine.toString() + header.toString()  + "\r\n" + body.toString() ;
    }
    
