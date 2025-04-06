@@ -15,9 +15,9 @@ public class StartLinerRequest implements IStartLine{
 
     private final HttpMethod method;
     private final String requestTarget;
-    private final String protocol;
+    private final EnumProcotolAccess protocol;
 
-    public StartLinerRequest(HttpMethod method, String requestTarget, String protocol){
+    public StartLinerRequest(HttpMethod method, String requestTarget, EnumProcotolAccess protocol){
         this.method = method;
         this.requestTarget = requestTarget;
         this.protocol = protocol;
@@ -33,7 +33,7 @@ public class StartLinerRequest implements IStartLine{
     
     @Override
     public String getProtocol() {
-        return protocol;
+        return protocol.getTypeVersion();
     }
 
     @Override

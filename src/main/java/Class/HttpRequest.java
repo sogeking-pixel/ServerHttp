@@ -26,17 +26,17 @@ public class HttpRequest extends HttpMessages  {
     }
     
     private void ParserStarline(String firstLine) {
-        System.out.println("No se que poner aca xd" + firstLine);
+        
         String[] parts = firstLine.split(" ");
         if (parts.length < 3) {
             throw new IllegalArgumentException("Error: HTTP StarLine Incorrect");
         }
         
         HttpMethod method = HttpMethod.valueOf( parts[0]);
-        String request = parts[1];     
-        String protocol = parts[2];    
-        System.out.println("wea supuestamente partida"+method+request+protocol);
-        this.startLine = new StartLinerRequest(method, request, protocol);
+        String url = parts[1];     
+        EnumProcotolAccess protocol = EnumProcotolAccess.fromTypeVersion( parts[2]);    
+       
+        this.startLine = new StartLinerRequest(method, url, protocol);
     }
     
     public StartLinerRequest getStartLine() {

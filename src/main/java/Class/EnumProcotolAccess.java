@@ -22,4 +22,13 @@ public enum EnumProcotolAccess {
     public String getTypeVersion() {
         return typeVersion;
     }
+    
+    public static EnumProcotolAccess fromTypeVersion(String version) {
+        for (EnumProcotolAccess e : EnumProcotolAccess.values()) {
+            if (e.getTypeVersion().equals(version)) {
+                return e;
+            }
+        }
+        throw new IllegalArgumentException("Version is not support: " + version);
+    }
 }

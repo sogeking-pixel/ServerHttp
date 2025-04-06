@@ -46,15 +46,15 @@ public class ServerHttp {
         
         System.out.println("Client conected: " + socket.getInetAddress());
         
-        HttpRequest resquest = listenedClient();
+        String messageReceived = listenClient();
         
-        handleRequest(resquest);
+        HttpResponse response = handleRequest(messageReceived);
         
-        responseClient();
+        responseClient(response);
         
     }
     
-    private HttpRequest listenedClient() throws IOException{
+    private String listenClient() throws IOException{
         
         InputStream input = socket.getInputStream();
         byte[] buffer = new byte[1024];
@@ -66,20 +66,32 @@ public class ServerHttp {
         
         String messageReceived = new String(buffer, 0, bytesRead, StandardCharsets.UTF_8);
         
-        return  new HttpRequest(messageReceived);
+        return  messageReceived;
         
     }
     
-    private void responseClient() throws IOException{
-         OutputStream output = socket.getOutputStream();
+    private void responseClient(HttpResponse response) throws IOException{
+        
+        OutputStream output = socket.getOutputStream();
+         
+        byte[] respuestaBytes = response.toString().getBytes();
+        output.write(respuestaBytes);
+         
     }
     
-    private void handleRequest(HttpRequest resquest){
+    private HttpResponse handleRequest(String messageReceived){
+        /*
+         intentar si existe el codigo, la url y manejar la respuesta
+        */
+        HttpRequest request = new HttpRequest(messageReceived);
+        StartLinerRequest startline = request.getStartLine();      
+                
+        String url = startline.getRequestTarget();
         
-        StartLinerRequest startline = resquest.getStartLine();
+        // hacer todo la viana de verificar las rutas y esas huevas
         
-        if (startline == null) throw new IllegalArgumentException("Error: startline null");
-        String url = startline.getProtocol();
+        return  new HttpResponse(EnumProcotolAccess.HTTP_1_1, HttpStatusCode.OK);
+        
         
         
     }

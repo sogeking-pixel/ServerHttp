@@ -15,7 +15,7 @@ public class HttpResponse extends HttpMessages {
     private Header header;
     private Body body;
 
-    public HttpResponse(String protocol, HttpStatusCode statusCode) {
+    public HttpResponse(EnumProcotolAccess protocol, HttpStatusCode statusCode) {
         this.starLine = new StartLineResponse(protocol, statusCode);
         this.header = new Header();
         this.body = new Body(null);
