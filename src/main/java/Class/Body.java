@@ -4,16 +4,14 @@
  */
 package Class;
 
-import java.util.Map;
-
 /**
  *
  * @author yerso
  */
-public class BodyResponse {
+public class Body {
     private String content;
 
-    public BodyResponse(String content) {
+    public Body(String content) {
         this.content = content;
     }
 
@@ -28,7 +26,7 @@ public class BodyResponse {
     
     @Override
     public String toString(){
-        return content;
+        return content == null? "" : content;
     }
     
    

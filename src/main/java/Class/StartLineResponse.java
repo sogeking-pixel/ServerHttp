@@ -12,19 +12,17 @@ import Interfaz.IStartLine;
  */
 public class StartLineResponse implements IStartLine{
     private String protocol = "";
-    private int statusCode;
-    private String statusText = "";
+    private HttpStatusCode statusCode;
 
-     public StartLineResponse(String protocol, int statusCode, String statusText) {
+     public StartLineResponse(String protocol, HttpStatusCode statusCode) {
          this.protocol = protocol;
          this.statusCode = statusCode;
-         this.statusText = statusText;
      }
 
     @Override
      public String toString(){
-         return protocol + " " + statusCode + " " + statusText + "\r\n";
-     }       
+         return protocol + " " + statusCode.getCode() + " " + statusCode.getDisplayName() + "\r\n";
+     }
 
     @Override
     public String getProtocol() {

@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author yerso
  */
-public class HeaderResponse {
+public class Header {
      Map<String, String> dictionary =  new HashMap<>();
 
     public Map<String, String> getDictionary() {

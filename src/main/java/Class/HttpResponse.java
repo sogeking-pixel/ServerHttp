@@ -9,18 +9,19 @@ package Class;
  *
  * @author yerso
  */
-public class Response extends HttpMessages {
-    private StartLineResponse starLine;
-    private HeaderResponse header;
-    private BodyResponse body;
 
-    public Response(String protocol, int statusCode, String statusText) {
-        this.starLine = new StartLineResponse(protocol, statusCode, statusText);
-        this.header = new HeaderResponse();
-        this.body = new BodyResponse(null);
+public class HttpResponse extends HttpMessages {
+    private StartLineResponse starLine;
+    private Header header;
+    private Body body;
+
+    public HttpResponse(String protocol, HttpStatusCode statusCode) {
+        this.starLine = new StartLineResponse(protocol, statusCode);
+        this.header = new Header();
+        this.body = new Body(null);
     }
     
-    public Response(Response response){
+    public HttpResponse(HttpResponse response){
         this.starLine = response.starLine;
         this.header = response.header;
         this.body = response.body;
@@ -34,19 +35,19 @@ public class Response extends HttpMessages {
         this.starLine = starLine;
     }
 
-    public HeaderResponse getHeader() {
+    public Header getHeader() {
         return header;
     }
 
-    public void setHeader(HeaderResponse header) {
+    public void setHeader(Header header) {
         this.header = header;
     }
 
-    public BodyResponse getBody() {
+    public Body getBody() {
         return body;
     }
 
-    public void setBody(BodyResponse body) {
+    public void setBody(Body body) {
         this.body = body;
     }
 
@@ -55,7 +56,8 @@ public class Response extends HttpMessages {
    
     @Override
    public String toString(){
-       return starLine.toString() + header.toString()  + "\r\n" + body.toString() ;
+        System.out.println("1." + starLine.toString() + "2." + header.toString()  + "\r\n" + "3." + body.toString());
+        return starLine.toString() + header.toString()  + "\r\n" + body.toString() ;
    }
    
     

@@ -13,17 +13,17 @@ import Interfaz.IStartLine;
 
 public class StartLinerRequest implements IStartLine{
 
-    private final EnumMethod method;
+    private final HttpMethod method;
     private final String requestTarget;
     private final String protocol;
 
-    public StartLinerRequest(EnumMethod method, String requestTarget, String protocol){
+    public StartLinerRequest(HttpMethod method, String requestTarget, String protocol){
         this.method = method;
         this.requestTarget = requestTarget;
         this.protocol = protocol;
     }
 
-    public EnumMethod getMethod() {
+    public HttpMethod getMethod() {
         return method;
     }
 

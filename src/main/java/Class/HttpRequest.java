@@ -9,10 +9,10 @@ package Class;
  *
  * @author yerso
  */
-public class Resquest extends HttpMessages  {
+public class HttpRequest extends HttpMessages  {
     private StartLinerRequest startLine;
     
-    public Resquest(String text) {
+    public HttpRequest(String text) {
         try{
             String startline =GetStartLine(text);
             if (startline == null){
@@ -32,7 +32,7 @@ public class Resquest extends HttpMessages  {
             throw new IllegalArgumentException("Error: HTTP StarLine Incorrect");
         }
         
-        EnumMethod method = EnumMethod.valueOf( parts[0]);        
+        HttpMethod method = HttpMethod.valueOf( parts[0]);
         String request = parts[1];     
         String protocol = parts[2];    
         System.out.println("wea supuestamente partida"+method+request+protocol);

@@ -8,6 +8,6 @@ package Class;
  *
  * @author yerso
  */
-public enum EnumMethod {
+public enum HttpMethod {
      GET, HEAD, POST, PUSH, PATCH, DELETE;
 }

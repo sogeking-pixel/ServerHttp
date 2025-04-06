@@ -4,17 +4,13 @@
 
 package Server;
 
-import Class.EnumMethod;
-import Class.Response;
-import Class.Resquest;
-import Class.StartLineResponse;
+import Class.HttpResponse;
+import Class.HttpRequest;
 import Class.StartLinerRequest;
-import java.io.BufferedReader;
+import Class.HttpStatusCode;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -25,33 +21,34 @@ import java.nio.file.Paths;
  * @author yerso
  */
 public class ServerHttp {
+    private static int port = 5922;
+    private static String server = "localhost";
 
     public static void main(String[] args) throws IOException, IllegalAccessException{
-        /*
-            Estara en bucle, siempre escuchando
-            Los separadores del formato sera esto:
-            https://mdn.github.io/shared-assets/images/diagrams/http/messages/http-message-anatomy.svg
+        /**
+         *Estara en bucle, siempre escuchando
+         *Los separadores del formato sera esto:
+         *@linkRecurse https://mdn.github.io/shared-assets/images/diagrams/http/messages/http-message-anatomy.svg
         */
-        
-        int port = 5676;
+
         
         byte[] fileBytes = Files.readAllBytes(Paths.get("C:\\Users\\yerso\\OneDrive\\Documentos\\NetBeansProjects\\ServerHttp\\src\\main\\java\\Recurse\\index.html"));
             
-        String contenidoHtml = new String(fileBytes, StandardCharsets.UTF_8);
+        String contentHtml = new String(fileBytes, StandardCharsets.UTF_8);
 
      
-        Response response_200 = new Response("HTTP/1.1", 200, "OKI DOKI");
+        HttpResponse response_200 = new HttpResponse("HTTP/1.1", HttpStatusCode.OK);
         
-        Response response_404 = new Response("HTTP/1.1", 404, "Not Found");
+        HttpResponse response_404 = new HttpResponse("HTTP/1.1", HttpStatusCode.NOT_FOUND);
         
         
-        Response get_page = new Response(response_200);
+        HttpResponse get_page = new HttpResponse(response_200);
         get_page.getHeader().setValueDictionary("Content-Type", "text/html; charset=UTF-8");
 
-        get_page.getBody().setContent(contenidoHtml);
+        get_page.getBody().setContent(contentHtml);
         
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            
+        try {
+           ServerSocket serverSocket = new ServerSocket(port);
            while(true){     
                 System.out.println("Wait client for port: " + port + "...");
 
@@ -62,7 +59,7 @@ public class ServerHttp {
                 InputStream input = socket.getInputStream();
                 OutputStream output = socket.getOutputStream();
                 
-                byte[] buffer = new byte[1024]; // Ajusta el tamaño según sea necesario
+                byte[] buffer = new byte[1024];
                 int bytesRead = input.read(buffer); 
                 
                 if (bytesRead == -1){
@@ -72,7 +69,7 @@ public class ServerHttp {
                 String mensajeRecibido = new String(buffer, 0, bytesRead, StandardCharsets.UTF_8);
                 
 //                System.out.println("Cliente dice: " + mensajeRecibido);
-                Resquest request = new Resquest(mensajeRecibido);
+                HttpRequest request = new HttpRequest(mensajeRecibido);
                 
                 StartLinerRequest startline = request.getStartLine();
                 
