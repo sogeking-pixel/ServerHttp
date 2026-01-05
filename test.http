@@ -1,0 +1,4 @@
+### GET request to example server
+GET http://192.168.1.35:9876/
+
+###
