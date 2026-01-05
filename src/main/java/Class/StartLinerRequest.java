@@ -5,7 +5,8 @@
 package Class;
 
 import Interfaz.IStartLine;
-
+import Enum.EnumProcotolAccess;
+import Enum.HttpMethod;
 /**
  *
  * @author yerso
@@ -38,7 +39,14 @@ public class StartLinerRequest implements IStartLine{
 
     @Override
     public String toString(){
-        return method + " " + requestTarget + " " + protocol + "\r\n";
+        StringBuilder sb = new StringBuilder();
+        sb.append(method)
+                .append(" ")
+                .append(requestTarget)
+                .append(" ")
+                .append(protocol)
+                .append("\r\n");
+        return sb.toString();
     }
 
 

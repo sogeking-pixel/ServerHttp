@@ -74,12 +74,15 @@ public class HttpMessages {
         
         return body;
     }
-    
+
     protected static String RecorrerHeader(Map<String, String> dictionary) {
-        String cadena = "";
+        StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, String> entry : dictionary.entrySet()) {
-            cadena += "\n" + entry.getKey() + ": " + entry.getValue() ;
-        }        
-        return cadena;
+            sb.append("\n")
+                    .append(entry.getKey())
+                    .append(": ")
+                    .append(entry.getValue());
+        }
+        return sb.toString();
     }
 }

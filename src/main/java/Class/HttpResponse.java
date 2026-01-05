@@ -4,6 +4,12 @@
  */
 package Class;
 
+import Enum.HttpStatusCode;
+import Enum.EnumProcotolAccess;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  *
@@ -52,10 +58,23 @@ public class HttpResponse extends HttpMessages {
     }
 
    
-    @Override
-   public String toString(){
-        return starLine.toString() + header.toString()  + "\r\n" + body.toString() ;
-   }
+    public void send(OutputStream output) throws IOException{
+        StringBuilder headerBuilder = new StringBuilder();
+        headerBuilder.append(this.starLine.toString());
+        headerBuilder.append(this.header.toString());
+        headerBuilder.append("\r\n");
+
+        byte[] headerBytes = headerBuilder.toString().getBytes(StandardCharsets.US_ASCII);
+        byte[] bodyBytes = this.body.getContentRaw();
+
+        output.write(headerBytes);
+
+        if (bodyBytes != null && bodyBytes.length > 0) {
+            output.write(bodyBytes);
+        }
+
+        output.flush();
+    }
    
     
 }

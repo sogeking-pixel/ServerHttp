@@ -5,6 +5,8 @@
 package Class;
 
 import Interfaz.IStartLine;
+import Enum.HttpStatusCode;
+import Enum.EnumProcotolAccess;
 
 /**
  *
@@ -21,7 +23,15 @@ public class StartLineResponse implements IStartLine{
 
     @Override
      public String toString(){
-         return protocol.getTypeVersion() + " " + statusCode.getCode() + " " + statusCode.getDisplayName() + "\r\n";
+        StringBuilder sb = new StringBuilder();
+        sb.append(protocol.getTypeVersion())
+                .append(" ")
+                .append(statusCode.getCode())
+                .append(" ")
+                .append(statusCode.getDisplayName())
+                .append("\r\n");
+
+         return sb.toString();
      }
 
     @Override

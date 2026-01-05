@@ -1,5 +1,6 @@
 package Class;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,6 +18,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import Enum.EnumProcotolAccess;
+import Enum.HttpStatusCode;
+
 
 public class ServerHttp{
     /**
@@ -29,7 +33,7 @@ public class ServerHttp{
     private String ipLocal = "127.0.0.0"; 
     private int port = 9876;
     private final Map<String, List<String>> allowedRoutes = new HashMap<>();
-    private final ExecutorService threadPool;
+    private final ExecutorService virtualThread;
 ;
 
     
@@ -38,13 +42,13 @@ public class ServerHttp{
         socket = sirve para la conexion del cliente y el servidor
     */
 
-    public ServerHttp(int maxThreads){
-        this.threadPool = Executors.newFixedThreadPool(maxThreads);
+    public ServerHttp(){
+        this.virtualThread = Executors.newVirtualThreadPerTaskExecutor();
         initUrls();
     }
-    public ServerHttp(String ipLocal,int port, int maxThreads){
+    public ServerHttp(String ipLocal,int port){
         this.port = port;
-        this.threadPool = Executors.newFixedThreadPool(maxThreads);
+        this.virtualThread = Executors.newVirtualThreadPerTaskExecutor();
         this.ipLocal = ipLocal;
 
         initUrls();
@@ -66,19 +70,13 @@ public class ServerHttp{
         while(true){
             System.out.println("Wait client for port: " + port + "...");
             Socket clientSocket = serverSocket.accept();
-            
-            threadPool.submit(new ClientHandler(clientSocket, this.allowedRoutes));           
+
+            virtualThread.submit(new ClientHandler(clientSocket, this.allowedRoutes));
             
         }
 
     }
-    
-       
-    
-    
-    
-    
-    
+
     
     private static class ClientHandler implements Runnable {
         private final Socket socket;
@@ -87,9 +85,7 @@ public class ServerHttp{
         public ClientHandler(Socket socket, Map<String, List<String>> allowedRoutes) {
             this.socket = socket;
             this.allowedRoutes = allowedRoutes;
-        }       
-        
-        
+        }
         
          @Override
         public void run()  {
@@ -97,42 +93,61 @@ public class ServerHttp{
             System.out.println("Client conected: " + socket.getInetAddress());
                         
             try {
-                String messageReceived;
-                messageReceived = listenClient();
-                HttpResponse response = handleRequest(messageReceived);
 
-                responseClient(response);
-                
-                this.socket.close();
-                System.out.println("Conexion Closed.\n\n");
+                InputStream input = socket.getInputStream();
+                OutputStream output = socket.getOutputStream();
+
+
+                while (!socket.isClosed()) {
+
+                    String headerString = readHeadersRobust(input);
+
+                    if (headerString == null || headerString.isEmpty()) {
+                        break;
+                    }
+
+                    HttpResponse response = handleRequest(headerString);
+
+                    response.send(output);
+
+                }
                 
             } catch (IOException ex) {
                 Logger.getLogger(ServerHttp.class.getName()).log(Level.SEVERE, null, ex);
             }
+            finally {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                }
+                System.out.println("Client closed: " + socket.getInetAddress());
+            }
 
             
         }
-        
-        private String listenClient() throws IOException{
-        
-            InputStream input = socket.getInputStream();
-            byte[] buffer = new byte[1024];
-            int bytesRead = input.read(buffer);
 
-            if(bytesRead == -1){
-                throw  new ConnectException("the client did not send any message");
+        private String readHeadersRobust(InputStream input) throws IOException {
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            int b;
+            int state = 0;
+
+            while ((b = input.read()) != -1) {
+                buffer.write(b);
+
+                if (b == '\r' && (state == 0 || state == 2)) state++;
+                else if (b == '\n' && (state == 1 || state == 3)) state++;
+                else state = 0;
+
+                if (state == 4) {
+                    return buffer.toString(StandardCharsets.UTF_8);
+                }
             }
-
-            String messageReceived = new String(buffer, 0, bytesRead, StandardCharsets.UTF_8);
-
-            return  messageReceived;
-
+            return null;
         }
+
         
         private HttpResponse handleRequest(String messageReceived) throws IOException{
-            /*
-             intentar si existe el codigo, la url y manejar la respuesta
-            */
+
             HttpRequest request = new HttpRequest(messageReceived);
             StartLinerRequest startline = request.getStartLine();
 
@@ -146,45 +161,21 @@ public class ServerHttp{
             System.out.println(this.allowedRoutes);
             System.out.println("wea: " + url);
 
-            // hacer todo la viana de verificar las rutas y esas huevas
             if (! allowedRoutes.containsKey(url)){ return new HttpResponse(protocol, HttpStatusCode.NOT_FOUND);}
 
             if (! allowedRoutes.get(url).contains(method) ) return new HttpResponse(protocol, HttpStatusCode.NOT_ALLOWED);
 
             HttpResponse response =  new HttpResponse(protocol, HttpStatusCode.OK);
-
-            String contentHtml = getHtmlToString("C:\\Users\\yerso\\OneDrive\\Documentos\\NetBeansProjects\\ServerHttp\\src\\main\\java\\Recurse\\index.html");
-
+            byte[] fileBytes = Files.readAllBytes(Paths.get("C:\\Users\\yerso\\OneDrive\\Documentos\\NetBeansProjects\\ServerHttp\\src\\main\\java\\Recurse\\index.html"));
+            response.getHeader().setValueDictionary("Content-Length", String.valueOf(fileBytes.length));
             response.getHeader().setValueDictionary("Content-Type", "text/html; charset=UTF-8");
-            response.getBody().setContent(contentHtml);
+            response.getBody().setContent(fileBytes);
 
             System.out.println("Done!");
 
             return response;
 
         }
-        
-        
-        private String getHtmlToString(String path) throws IOException{
-            byte[] fileBytes = Files.readAllBytes(Paths.get(path));
-
-            String contentHtml = new String(fileBytes, StandardCharsets.UTF_8);
-            return contentHtml;
-        }
-        
-        
-        private void responseClient(HttpResponse response) throws IOException{
-        
-            OutputStream output = socket.getOutputStream();
-
-            byte[] respuestaBytes = response.toString().getBytes();
-            output.write(respuestaBytes);
-            this.socket.close();
-
-        }        
-        
-        
-        
         
     }
 

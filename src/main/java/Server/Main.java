@@ -18,7 +18,7 @@ public class Main {
     public static void main(String[] args) throws IOException, IllegalAccessException{
         
         
-        ServerHttp serverHttp = new ServerHttp("192.168.1.33",9876,100);
+        ServerHttp serverHttp = new ServerHttp("192.168.1.35",9876);
         serverHttp.start();
         
     }

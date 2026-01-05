@@ -4,30 +4,36 @@
  */
 package Class;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  *
  * @author yerso
  */
 public class Body {
-    private String content;
+    private byte[] content;
 
-    public Body(String content) {
+    public Body() {
+        this.content = new byte[0];
+    }
+
+    public Body(byte[] content) {
         this.content = content;
     }
 
-    public String getContent() {
+    public byte[] getContentRaw(){
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(byte[] content) {
         this.content = content;
     }
-    
-    
+
+
     @Override
     public String toString(){
-        return content == null? "" : content;
+        return new String(content, StandardCharsets.UTF_8);
     }
-    
-   
+
+
 }

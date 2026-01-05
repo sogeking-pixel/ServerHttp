@@ -32,10 +32,14 @@ public class Header {
     }
     
     private String RecorrerHeader(Map<String, String> dictionary) {
-        String cadena = "";
+        StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, String> entry : dictionary.entrySet()) {
-            cadena +=  entry.getKey() + ": " + entry.getValue()  + "\r\n";
+            sb.append(entry.getKey())
+                    .append(": ")
+                    .append(entry.getValue())
+                    .append("\r\n");
+
         }        
-        return cadena;
+        return sb.toString();
     }
 }

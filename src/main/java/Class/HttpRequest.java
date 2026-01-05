@@ -4,7 +4,8 @@
  */
 package Class;
 
-
+import Enum.HttpMethod;
+import Enum.EnumProcotolAccess;
 /**
  *
  * @author yerso

@@ -4,7 +4,7 @@
  */
 package Interfaz;
 
-import Class.EnumProcotolAccess;
+import Enum.EnumProcotolAccess;
 
 /**
  *
