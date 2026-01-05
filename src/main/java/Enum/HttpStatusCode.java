@@ -1,8 +1,8 @@
-package Class;
+package Enum;
 
 public enum HttpStatusCode {
 
-    OK(200, "OKI DOKI"),
+    OK(200, "OK"),
     CREATED(201, "Creado"),
 
     BAD_REQUEST(400, "Error cliente"),
